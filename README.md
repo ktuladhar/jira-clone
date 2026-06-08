@@ -8,8 +8,6 @@
   <a href="https://github.com/ktuladhar/jira-clone/tree/master/api">View API</a>
 </h3>
 
-![Tech logos](https://i.ibb.co/DVFj8PL/tech-icons.jpg)
-
 ![App screenshot](https://i.ibb.co/W3qVvCn/jira-optimized.jpg)
 
 ## About
