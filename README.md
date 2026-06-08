@@ -2,12 +2,6 @@
 
 <div align="center">Auto formatted with Prettier, tested with Cypress 🎗</div>
 
-<h3 align="center">
-  <a href="https://jira.ivorreic.com/">Visit the live demo</a> |
-  <a href="https://github.com/ktuladhar/jira-clone/tree/master/client">View client</a> |
-  <a href="https://github.com/ktuladhar/jira-clone/tree/master/api">View API</a>
-</h3>
-
 ![Tech logos](https://i.ibb.co/DVFj8PL/tech-icons.jpg)
 
 ![App screenshot](https://i.ibb.co/W3qVvCn/jira-optimized.jpg)
@@ -238,11 +232,3 @@ Issues and pull requests are welcome on this fork.
 ## Credits
 
 Originally created by [Ivor Reic](https://github.com/oldboyxx/jira_clone). Maintained as a fork by [ktuladhar](https://github.com/ktuladhar).
-
-<hr>
-
-<h3 align="center">
-  <a href="https://jira.ivorreic.com/">Visit the live demo</a> |
-  <a href="https://github.com/ktuladhar/jira-clone/tree/master/client">View client</a> |
-  <a href="https://github.com/ktuladhar/jira-clone/tree/master/api">View API</a>
-</h3>
