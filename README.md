@@ -4,8 +4,8 @@
 
 <h3 align="center">
   <a href="https://jira.ivorreic.com/">Visit the live app</a> |
-  <a href="https://github.com/oldboyxx/jira_clone/tree/master/client">View client</a> |
-  <a href="https://github.com/oldboyxx/jira_clone/tree/master/api">View API</a>
+  <a href="https://github.com/ktuladhar/jira-clone/tree/master/client">View client</a> |
+  <a href="https://github.com/ktuladhar/jira-clone/tree/master/api">View API</a>
 </h3>
 
 ![Tech logos](https://i.ibb.co/DVFj8PL/tech-icons.jpg)
@@ -14,9 +14,9 @@
 
 ## What is this and who is it for 🤷‍♀️
 
-I do React consulting and this is a showcase product I've built in my spare time. It's a very good example of modern, real-world React codebase.
+This is a fork of [oldboyxx/jira_clone](https://github.com/oldboyxx/jira_clone) — a showcase Jira-style app and a strong example of a modern, real-world React codebase.
 
-There are many showcase/example React projects out there but most of them are way too simple. I like to think that this codebase contains enough complexity to offer valuable insights to React developers of all skill levels while still being _relatively_ easy to understand.
+There are many showcase/example React projects out there but most of them are way too simple. This codebase contains enough complexity to offer valuable insights to React developers of all skill levels while still being _relatively_ easy to understand.
 
 ## Features
 
@@ -30,13 +30,48 @@ There are many showcase/example React projects out there but most of them are wa
 
 ## Setting up development environment 🛠
 
-- Install [postgreSQL](https://www.postgresql.org/) if you don't have it already and create a database named `jira_development`.
-- `git clone https://github.com/oldboyxx/jira_clone.git`
+### Prerequisites
+
+- **Node.js 16–20** recommended (see [Node.js notes](#nodejs-notes) for Node 18+)
+- **PostgreSQL 11** — TypeORM 0.2 in this project is not compatible with PostgreSQL 12+
+
+### Database
+
+Install [PostgreSQL](https://www.postgresql.org/) and create a database named `jira_development`, or run Postgres 11 with Docker:
+
+```bash
+docker run -d --name jira-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=jira_development \
+  -p 5433:5432 \
+  postgres:11
+```
+
+If you use Docker on port `5433`, set `DB_PORT=5433` in your `/api/.env` file.
+
+### Install and run
+
+- `git clone https://github.com/ktuladhar/jira-clone.git`
 - Create an empty `.env` file in `/api`, copy `/api/.env.example` contents into it, and fill in your database username and password.
 - `npm run install-dependencies`
 - `cd api && npm start`
 - `cd client && npm start` in another terminal tab
 - App should now be running on `http://localhost:8080/`
+
+### Node.js notes
+
+**Client (Node 18+):** Webpack 4 requires the OpenSSL legacy provider:
+
+```bash
+# macOS / Linux
+NODE_OPTIONS=--openssl-legacy-provider npm start
+
+# Windows PowerShell
+$env:NODE_OPTIONS="--openssl-legacy-provider"; npm start
+```
+
+**API (Windows):** If `ts-node` is not found, add `api/node_modules/.bin` to your `PATH` before running `npm start`.
 
 ## Running cypress end-to-end tests 🚥
 
@@ -62,11 +97,11 @@ Not all components have properly defined [aria attributes](https://developer.moz
 
 ### Unit/Integration tests 🧪
 
-Both Client and API are currently tested through [end-to-end Cypress tests](https://github.com/oldboyxx/jira_clone/tree/master/client/cypress/integration). That's good enough for a relatively simple application such as this, even if it was a real product. However, as the app grows in complexity, it might be wise to start writing additional unit/integration tests.
+Both Client and API are currently tested through [end-to-end Cypress tests](https://github.com/ktuladhar/jira-clone/tree/master/client/cypress/integration). That's good enough for a relatively simple application such as this, even if it was a real product. However, as the app grows in complexity, it might be wise to start writing additional unit/integration tests.
 
 ## Contributing
 
-I will not be accepting PR's on this repository. Feel free to fork and maintain your own version.
+Feel free to open issues or submit pull requests on this fork.
 
 ## License
 
@@ -76,6 +111,6 @@ I will not be accepting PR's on this repository. Feel free to fork and maintain 
 
 <h3>
   <a href="https://jira.ivorreic.com/">Visit the live app</a> |
-  <a href="https://github.com/oldboyxx/jira_clone/tree/master/client">View client</a> |
-  <a href="https://github.com/oldboyxx/jira_clone/tree/master/api">View API</a>
+  <a href="https://github.com/ktuladhar/jira-clone/tree/master/client">View client</a> |
+  <a href="https://github.com/ktuladhar/jira-clone/tree/master/api">View API</a>
 </h3>
