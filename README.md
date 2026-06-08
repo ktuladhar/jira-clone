@@ -2,8 +2,6 @@
 
 <div align="center">Auto formatted with Prettier, tested with Cypress 🎗</div>
 
-![Tech logos](https://i.ibb.co/DVFj8PL/tech-icons.jpg)
-
 ![App screenshot](https://i.ibb.co/W3qVvCn/jira-optimized.jpg)
 
 ## About
