@@ -2,15 +2,15 @@
 
 <div align="center">Auto formatted with Prettier, tested with Cypress 🎗</div>
 
-![App screenshot](https://i.ibb.co/W3qVvCn/jira-optimized.jpg)
+![App screenshot](./docs/screenshot.png)
 
 ## About
 
-This is a fork of [oldboyxx/jira_clone](https://github.com/oldboyxx/jira_clone) — a full-featured Jira-style project management app built as a showcase of modern React and Node.js patterns.
+This project is based on [oldboyxx/jira_clone](https://github.com/oldboyxx/jira_clone) — a full-featured Jira-style project management app built as a showcase of modern React and Node.js patterns.
 
 Unlike many tutorial projects, this codebase has real-world complexity: drag-and-drop kanban boards, rich issue modals, custom UI components, and a typed REST API — while remaining readable enough to learn from.
 
-**Repository:** [github.com/ktuladhar/jira-clone](https://github.com/ktuladhar/jira-clone)
+This copy includes additional enhancements (due dates, board calendar filter, modern PostgreSQL/Node compatibility, and updated documentation).
 
 ## App features
 
@@ -113,9 +113,9 @@ jira_clone/
 | `PUT` | `/comments/:commentId` | Update comment |
 | `DELETE` | `/comments/:commentId` | Delete comment |
 
-## Fork changes
+## Enhancements in this project
 
-This fork includes compatibility updates for modern development environments:
+This codebase extends the upstream project with compatibility updates and new features:
 
 - **TypeORM upgraded to 0.3** with **PostgreSQL 18** support (previously required PostgreSQL 11)
 - **`pg` upgraded to v8** — fixes silent connection failures on Node.js 18+
@@ -127,7 +127,6 @@ This fork includes compatibility updates for modern development environments:
 - **API startup messages** — clearer errors for port conflicts and database connection failures
 - **Auto port cleanup** — `npm start` in `/api` and `/client` frees ports **3000** and **8080** before launching
 - **Client dev server** — binds to all interfaces so both `localhost:8080` and `127.0.0.1:8080` work
-- **README and repo links** updated to point to [ktuladhar/jira-clone](https://github.com/ktuladhar/jira-clone)
 
 ## Setting up development environment 🛠
 
@@ -154,8 +153,8 @@ If you use a non-default port, set `DB_PORT` in your `/api/.env` file accordingl
 ### First-time setup
 
 ```bash
-git clone https://github.com/ktuladhar/jira-clone.git
-cd jira-clone
+git clone https://github.com/oldboyxx/jira_clone.git
+cd jira_clone
 ```
 
 1. Create an empty `.env` file in `/api`, copy `/api/.env.example` contents into it, and fill in your database credentials.
@@ -277,11 +276,7 @@ Not all components have full [ARIA attributes](https://developer.mozilla.org/en-
 
 ### Unit/integration tests 🧪
 
-Coverage is primarily through [Cypress E2E tests](https://github.com/ktuladhar/jira-clone/tree/master/client/cypress/integration). Unit and integration tests would be valuable as the app grows.
-
-## Contributing
-
-Issues and pull requests are welcome on this fork.
+Coverage is primarily through Cypress E2E tests in `client/cypress/integration`. Unit and integration tests would be valuable as the app grows.
 
 ## License
 
@@ -289,4 +284,4 @@ Issues and pull requests are welcome on this fork.
 
 ## Credits
 
-Originally created by [Ivor Reic](https://github.com/oldboyxx/jira_clone). Maintained as a fork by [ktuladhar](https://github.com/ktuladhar).
+Originally created by [Ivor Reic](https://github.com/oldboyxx/jira_clone).

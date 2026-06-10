@@ -6,6 +6,8 @@ import Tooltip from 'shared/components/Tooltip';
 import feedbackImage from './assets/feedback.png';
 import { FeedbackDropdown, FeedbackImageCont, FeedbackImage, FeedbackParagraph } from './Styles';
 
+const UPSTREAM_REPO_URL = 'https://github.com/oldboyxx/jira_clone';
+
 const AboutTooltip = tooltipProps => (
   <Tooltip
     width={300}
@@ -21,12 +23,8 @@ const AboutTooltip = tooltipProps => (
           back-end.
         </FeedbackParagraph>
 
-        <a href="https://github.com/ktuladhar/" target="_blank" rel="noreferrer noopener">
-          <Button variant="primary">Visit Website</Button>
-        </a>
-
-        <a href="https://github.com/ktuladhar/jira-clone" target="_blank" rel="noreferrer noopener">
-          <Button style={{ marginLeft: 10 }} icon="github">
+        <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer noopener">
+          <Button variant="primary" icon="github">
             Github Repo
           </Button>
         </a>
