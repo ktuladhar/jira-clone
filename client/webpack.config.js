@@ -44,8 +44,27 @@ module.exports = {
     contentBase: path.join(__dirname, 'dev'),
     historyApiFallback: true,
     hot: true,
+    proxy: [
+      {
+        context: pathname =>
+          pathname.startsWith('/authentication') ||
+          pathname.startsWith('/currentUser') ||
+          pathname.startsWith('/issues') ||
+          pathname.startsWith('/comments') ||
+          pathname === '/project',
+        target: 'http://localhost:3000',
+        bypass: req => {
+          if (req.url === '/project' && req.headers.accept?.includes('text/html')) {
+            return false;
+          }
+        },
+      },
+    ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.API_URL': JSON.stringify(''),
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html'),
