@@ -2,15 +2,7 @@
 
 <div align="center">Auto formatted with Prettier, tested with Cypress 🎗</div>
 
-## Interactive Demo
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ktuladhar/jira-clone)
-
-Try the app in your browser — no local setup required.
-
-1. Click **Open in GitHub Codespaces** above (or use **Code → Codespaces → Create codespace on main**)
-2. Wait for the environment to build and services to start (first launch takes a few minutes)
-3. When port **8080** is forwarded, click **Open in Browser** — the app loads the **Singularity v1.0** demo board as guest user **King**
+![App screenshot](https://i.ibb.co/W3qVvCn/jira-optimized.jpg)
 
 ## About
 
