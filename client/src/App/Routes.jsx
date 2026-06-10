@@ -5,13 +5,19 @@ import history from 'browserHistory';
 import Project from 'Project';
 import Authenticate from 'Auth/Authenticate';
 import PageError from 'shared/components/PageError';
+import { getStoredAuthToken } from 'shared/utils/authToken';
+
+const isAuthenticated = () => Boolean(getStoredAuthToken());
 
 const Routes = () => (
   <Router history={history}>
     <Switch>
-      <Redirect exact from="/" to="/project" />
+      <Redirect exact from="/" to={isAuthenticated() ? '/project' : '/authenticate'} />
       <Route path="/authenticate" component={Authenticate} />
-      <Route path="/project" component={Project} />
+      <Route
+        path="/project"
+        render={() => (isAuthenticated() ? <Project /> : <Redirect to="/authenticate" />)}
+      />
       <Route component={PageError} />
     </Switch>
   </Router>

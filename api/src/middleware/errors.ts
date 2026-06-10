@@ -4,7 +4,11 @@ import { pick } from 'lodash';
 import { CustomError } from 'errors';
 
 export const handleError: ErrorRequestHandler = (error, _req, res, _next) => {
-  console.error(error);
+  const isExpectedAuthError = error instanceof CustomError && error.status === 401;
+
+  if (!isExpectedAuthError) {
+    console.error(error);
+  }
 
   const isErrorSafeForClient = error instanceof CustomError;
 

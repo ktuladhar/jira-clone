@@ -172,15 +172,7 @@ cd client && npm start
 
 ### Node.js notes
 
-**Client (Node 18+):** Webpack 4 requires the OpenSSL legacy provider:
-
-```bash
-# macOS / Linux
-NODE_OPTIONS=--openssl-legacy-provider npm start
-
-# Windows PowerShell
-$env:NODE_OPTIONS="--openssl-legacy-provider"; npm start
-```
+**Client (Node 18+):** Webpack 4 requires the OpenSSL legacy provider. The `npm start` and `npm run build` scripts set this automatically via `cross-env`. If you still see `ERR_OSSL_EVP_UNSUPPORTED`, run `npm install` in `/client` first.
 
 **API (Windows):** The start script uses `npx ts-node` so no manual PATH setup is required.
 

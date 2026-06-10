@@ -16,7 +16,11 @@ const establishDatabaseConnection = async (): Promise<void> => {
   try {
     await createDatabaseConnection();
   } catch (error) {
-    console.log(error);
+    console.error(
+      'Failed to connect to PostgreSQL. Check api/.env and that the database is running.',
+    );
+    console.error(error);
+    process.exit(1);
   }
 };
 
@@ -38,7 +42,21 @@ const initializeExpress = (): void => {
   app.use((req, _res, next) => next(new RouteNotFoundError(req.originalUrl)));
   app.use(handleError);
 
-  app.listen(process.env.PORT || 3000);
+  const port = Number(process.env.PORT) || 3000;
+  const server = app.listen(port, () => {
+    console.log(`API listening on http://localhost:${port}`);
+  });
+
+  server.on('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(
+        `Port ${port} is already in use. Stop the other API process or set a different PORT in api/.env.`,
+      );
+    } else {
+      console.error(error);
+    }
+    process.exit(1);
+  });
 };
 
 const initializeApp = async (): Promise<void> => {

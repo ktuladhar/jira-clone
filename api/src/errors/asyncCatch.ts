@@ -1,13 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-type AsyncRequestHandler = (
+type RequestHandlerFn = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => Promise<void | Response>;
+) => void | Promise<void | Response>;
 
-export const catchErrors = (requestHandler: AsyncRequestHandler): RequestHandler => {
+export const catchErrors = (requestHandler: RequestHandlerFn): RequestHandler => {
   return (req, res, next): void => {
-    requestHandler(req, res, next).catch(next);
+    Promise.resolve(requestHandler(req, res, next)).catch(next);
   };
 };

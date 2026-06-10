@@ -10,19 +10,22 @@ const Authenticate = () => {
   const history = useHistory();
 
   useEffect(() => {
-    const createGuestAccount = async () => {
+    const initAuth = async () => {
+      if (getStoredAuthToken()) {
+        history.push('/project');
+        return;
+      }
+
       try {
         const { authToken } = await api.post('/authentication/guest');
         storeAuthToken(authToken);
-        history.push('/');
+        history.push('/project');
       } catch (error) {
         toast.error(error);
       }
     };
 
-    if (!getStoredAuthToken()) {
-      createGuestAccount();
-    }
+    initAuth();
   }, [history]);
 
   return <PageLoader />;

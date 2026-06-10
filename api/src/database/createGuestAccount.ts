@@ -3,22 +3,46 @@ import { ProjectCategory } from 'constants/projects';
 import { IssueType, IssueStatus, IssuePriority } from 'constants/issues';
 import { createEntity } from 'utils/typeorm';
 
+const CHESS_PIECE_AVATARS = {
+  king: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wk.png',
+  queen: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wq.png',
+  rook: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wr.png',
+  bishop: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wb.png',
+  horse: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wn.png',
+  pawn: 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/wp.png',
+};
+
 const seedUsers = (): Promise<User[]> => {
   const users = [
     createEntity(User, {
-      email: 'rick@jira.guest',
-      name: 'Pickle Rick',
-      avatarUrl: 'https://i.ibb.co/7JM1P2r/picke-rick.jpg',
+      email: 'queen@jira.guest',
+      name: 'Queen',
+      avatarUrl: CHESS_PIECE_AVATARS.queen,
     }),
     createEntity(User, {
-      email: 'yoda@jira.guest',
-      name: 'Baby Yoda',
-      avatarUrl: 'https://i.ibb.co/6n0hLML/baby-yoda.jpg',
+      email: 'rook@jira.guest',
+      name: 'Rook',
+      avatarUrl: CHESS_PIECE_AVATARS.rook,
     }),
     createEntity(User, {
-      email: 'gaben@jira.guest',
-      name: 'Lord Gaben',
-      avatarUrl: 'https://i.ibb.co/6RJ5hq6/gaben.jpg',
+      email: 'king@jira.guest',
+      name: 'King',
+      avatarUrl: CHESS_PIECE_AVATARS.king,
+    }),
+    createEntity(User, {
+      email: 'bishop@jira.guest',
+      name: 'Bishop',
+      avatarUrl: CHESS_PIECE_AVATARS.bishop,
+    }),
+    createEntity(User, {
+      email: 'horse@jira.guest',
+      name: 'Horse',
+      avatarUrl: CHESS_PIECE_AVATARS.horse,
+    }),
+    createEntity(User, {
+      email: 'pawn@jira.guest',
+      name: 'Pawn',
+      avatarUrl: CHESS_PIECE_AVATARS.pawn,
     }),
   ];
   return Promise.all(users);
@@ -26,7 +50,7 @@ const seedUsers = (): Promise<User[]> => {
 
 const seedProject = (users: User[]): Promise<Project> =>
   createEntity(Project, {
-    name: 'singularity 1.0',
+    name: 'Singularity v1.0',
     url: 'https://www.atlassian.com/software/jira',
     description:
       'Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.',
@@ -107,7 +131,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       status: IssueStatus.SELECTED,
       priority: IssuePriority.HIGH,
       listPosition: 6,
-      description: `<h2>Try assigning <u style="background-color: rgb(204, 232, 204);">Pickle Rick</u> to this issue. <span style="color: rgb(51, 51, 51);">🥒&nbsp;🥒&nbsp;🥒</span></h2><p><br></p>`,
+      description: `<h2>Try assigning <u style="background-color: rgb(204, 232, 204);">Queen</u> to this issue. <span style="color: rgb(51, 51, 51);">♕&nbsp;♕&nbsp;♕</span></h2><p><br></p>`,
       estimate: 6,
       timeSpent: 3,
       reporterId: users[1].id,
@@ -126,6 +150,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       timeSpent: 11,
       reporterId: users[0].id,
       project,
+      users: [users[3], users[4], users[5]],
     }),
     createEntity(Issue, {
       title: 'Try leaving a comment on this issue.',
