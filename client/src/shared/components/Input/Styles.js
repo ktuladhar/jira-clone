@@ -22,6 +22,7 @@ export const InputElement = styled.input`
   ${font.regular}
   ${font.size(15)}
   ${props => props.hasIcon && 'padding-left: 32px;'}
+  ${props => props.hasRightIcon && `padding-right: ${32 * (props.rightIconCount || 1)}px;`}
   &:hover {
     background: ${color.backgroundLight};
   }

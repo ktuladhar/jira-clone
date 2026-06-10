@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { times, range } from 'lodash';
 
-import { formatDate, formatDateTimeForAPI } from 'shared/utils/dateTime';
+import { formatDate, formatDateForAPI, formatDateTimeForAPI } from 'shared/utils/dateTime';
 import Icon from 'shared/components/Icon';
 
 import {
@@ -28,8 +28,13 @@ const defaultProps = {
   value: undefined,
 };
 
+const getInitialMonth = dateValue => {
+  const date = dateValue && moment(dateValue).isValid() ? moment(dateValue) : moment();
+  return date.clone().startOf('month');
+};
+
 const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) => {
-  const [selectedMonth, setSelectedMonth] = useState(moment(value).startOf('month'));
+  const [selectedMonth, setSelectedMonth] = useState(getInitialMonth(value));
 
   const handleYearChange = year => {
     setSelectedMonth(moment(selectedMonth).set({ year: Number(year) }));
@@ -40,16 +45,16 @@ const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) =
   };
 
   const handleDayChange = newDate => {
-    const existingHour = value ? moment(value).hour() : '00';
-    const existingMinute = value ? moment(value).minute() : '00';
-
-    const newDateWithExistingTime = newDate.set({
-      hour: existingHour,
-      minute: existingMinute,
-    });
-    onChange(formatDateTimeForAPI(newDateWithExistingTime));
-
-    if (!withTime) {
+    if (withTime) {
+      const existingHour = value ? moment(value).hour() : '00';
+      const existingMinute = value ? moment(value).minute() : '00';
+      const newDateWithExistingTime = newDate.set({
+        hour: existingHour,
+        minute: existingMinute,
+      });
+      onChange(formatDateTimeForAPI(newDateWithExistingTime));
+    } else {
+      onChange(formatDateForAPI(newDate));
       setDropdownOpen(false);
     }
   };
@@ -82,7 +87,7 @@ const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) =
           <Day
             key={date}
             isToday={moment().isSame(date, 'day')}
-            isSelected={moment(value).isSame(date, 'day')}
+            isSelected={value && moment(value).isValid() && moment(value).isSame(date, 'day')}
             onClick={() => handleDayChange(date)}
           >
             {formatDate(date, 'D')}

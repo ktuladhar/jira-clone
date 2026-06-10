@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router-dom';
 import { Draggable } from 'react-beautiful-dnd';
 
-import { IssueTypeIcon, IssuePriorityIcon } from 'shared/components';
+import { IssueTypeIcon, IssuePriorityIcon, Icon } from 'shared/components';
+import { formatDueDateShort, isPastDue } from 'shared/utils/dateTime';
 
-import { IssueLink, Issue, Title, Bottom, Assignees, AssigneeAvatar } from './Styles';
+import {
+  IssueLink,
+  Issue,
+  Title,
+  Bottom,
+  BottomLeft,
+  DueDate,
+  Assignees,
+  AssigneeAvatar,
+} from './Styles';
 
 const propTypes = {
   projectUsers: PropTypes.array.isRequired,
@@ -31,10 +41,16 @@ const ProjectBoardListIssue = ({ projectUsers, issue, index }) => {
           <Issue isBeingDragged={snapshot.isDragging && !snapshot.isDropAnimating}>
             <Title>{issue.title}</Title>
             <Bottom>
-              <div>
+              <BottomLeft>
                 <IssueTypeIcon type={issue.type} />
                 <IssuePriorityIcon priority={issue.priority} top={-1} left={4} />
-              </div>
+                {issue.dueDate && (
+                  <DueDate isOverdue={isPastDue(issue.dueDate, issue.status)}>
+                    <Icon type="calendar" />
+                    {formatDueDateShort(issue.dueDate)}
+                  </DueDate>
+                )}
+              </BottomLeft>
               <Assignees>
                 {assignees.map(user => (
                   <AssigneeAvatar

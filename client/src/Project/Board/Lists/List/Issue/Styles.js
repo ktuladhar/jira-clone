@@ -44,6 +44,26 @@ export const Bottom = styled.div`
   align-items: center;
 `;
 
+export const BottomLeft = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+`;
+
+export const DueDate = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  color: ${props => (props.isOverdue ? color.danger : color.textMedium)};
+  ${font.size(12.5)}
+
+  i {
+    margin-right: 4px;
+    font-size: 14px;
+  }
+`;
+
 export const Assignees = styled.div`
   display: flex;
   flex-direction: row-reverse;

@@ -5,6 +5,8 @@ import { Route, useRouteMatch, useHistory } from 'react-router-dom';
 import useMergeState from 'shared/hooks/mergeState';
 import { Breadcrumbs, Modal } from 'shared/components';
 
+import { defaultCalendarFilters } from './Filters/CalendarFilter/utils';
+
 import Header from './Header';
 import Filters from './Filters';
 import Lists from './Lists';
@@ -20,6 +22,7 @@ const defaultFilters = {
   searchTerm: '',
   userIds: [],
   myOnly: false,
+  calendar: { ...defaultCalendarFilters },
   recent: false,
 };
 
@@ -34,6 +37,7 @@ const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
       <Breadcrumbs items={['Projects', project.name, 'Kanban Board']} />
       <Header />
       <Filters
+        issues={project.issues}
         projectUsers={project.users}
         defaultFilters={defaultFilters}
         filters={filters}
@@ -59,6 +63,8 @@ const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
                 projectUsers={project.users}
                 fetchProject={fetchProject}
                 updateLocalProjectIssues={updateLocalProjectIssues}
+                mergeFilters={mergeFilters}
+                calendarFilters={filters.calendar}
                 modalClose={modal.close}
               />
             )}

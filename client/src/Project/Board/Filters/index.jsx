@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { xor } from 'lodash';
 
+import { isCalendarFilterActive } from './CalendarFilter/utils';
+import CalendarFilter from './CalendarFilter';
+
 import {
   Filters,
   SearchInput,
@@ -13,16 +16,18 @@ import {
 } from './Styles';
 
 const propTypes = {
+  issues: PropTypes.array.isRequired,
   projectUsers: PropTypes.array.isRequired,
   defaultFilters: PropTypes.object.isRequired,
   filters: PropTypes.object.isRequired,
   mergeFilters: PropTypes.func.isRequired,
 };
 
-const ProjectBoardFilters = ({ projectUsers, defaultFilters, filters, mergeFilters }) => {
-  const { searchTerm, userIds, myOnly, recent } = filters;
+const ProjectBoardFilters = ({ issues, projectUsers, defaultFilters, filters, mergeFilters }) => {
+  const { searchTerm, userIds, myOnly, calendar, recent } = filters;
 
-  const areFiltersCleared = !searchTerm && userIds.length === 0 && !myOnly && !recent;
+  const areFiltersCleared =
+    !searchTerm && userIds.length === 0 && !myOnly && !isCalendarFilterActive(calendar) && !recent;
 
   return (
     <Filters data-testid="board-filters">
@@ -49,6 +54,12 @@ const ProjectBoardFilters = ({ projectUsers, defaultFilters, filters, mergeFilte
       >
         Only My Issues
       </StyledButton>
+      <CalendarFilter
+        issues={issues}
+        projectUsers={projectUsers}
+        calendar={calendar}
+        mergeFilters={mergeFilters}
+      />
       <StyledButton
         variant="empty"
         isActive={recent}

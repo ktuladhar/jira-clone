@@ -4,13 +4,15 @@ import { color, font, mixin, zIndexValues } from 'shared/utils/styles';
 
 export const StyledDatePicker = styled.div`
   position: relative;
+  width: 100%;
 `;
 
 export const Dropdown = styled.div`
-  z-index: ${zIndexValues.dropdown};
-  position: absolute;
-  top: 130%;
-  right: 0;
+  z-index: ${props => (props.isPortaled ? zIndexValues.modal + 1 : zIndexValues.dropdown)};
+  position: ${props => (props.isPortaled ? 'fixed' : 'absolute')};
+  top: ${props => (props.isPortaled ? `${props.top}px` : '130%')};
+  left: ${props => (props.isPortaled ? `${props.left}px` : 'auto')};
+  right: ${props => (props.isPortaled ? 'auto' : '0')};
   width: 270px;
   border-radius: 3px;
   background: #fff;
@@ -21,6 +23,54 @@ export const Dropdown = styled.div`
       width: 360px;
       padding-right: 90px;
     `}
+`;
+
+export const InputActions = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+`;
+
+export const InputActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: ${color.textMedium};
+  ${mixin.clickable}
+
+  &:hover {
+    color: ${color.textDarkest};
+    background: ${color.backgroundLight};
+  }
+
+  &:last-child {
+    border-radius: 0 3px 3px 0;
+  }
+`;
+
+export const ClearDateFooter = styled.button`
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-top: 1px solid ${color.borderLight};
+  background: #fff;
+  text-align: left;
+  color: ${color.textDark};
+  ${font.size(14)}
+  ${mixin.clickable}
+
+  &:hover {
+    background: ${color.backgroundLight};
+  }
 `;
 
 export const DateSection = styled.div`

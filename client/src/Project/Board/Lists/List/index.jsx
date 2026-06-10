@@ -5,6 +5,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { intersection } from 'lodash';
 
 import { IssueStatusCopy } from 'shared/constants/issues';
+import { applyCalendarFilters } from 'Project/Board/Filters/CalendarFilter/utils';
 
 import Issue from './Issue';
 import { List, Title, IssuesCount, Issues } from './Styles';
@@ -50,7 +51,7 @@ const ProjectBoardList = ({ status, project, filters, currentUserId }) => {
 };
 
 const filterIssues = (projectIssues, filters, currentUserId) => {
-  const { searchTerm, userIds, myOnly, recent } = filters;
+  const { searchTerm, userIds, myOnly, calendar, recent } = filters;
   let issues = projectIssues;
 
   if (searchTerm) {
@@ -62,6 +63,7 @@ const filterIssues = (projectIssues, filters, currentUserId) => {
   if (myOnly && currentUserId) {
     issues = issues.filter(issue => issue.userIds.includes(currentUserId));
   }
+  issues = applyCalendarFilters(issues, calendar);
   if (recent) {
     issues = issues.filter(issue => moment(issue.updatedAt).isAfter(moment().subtract(3, 'days')));
   }

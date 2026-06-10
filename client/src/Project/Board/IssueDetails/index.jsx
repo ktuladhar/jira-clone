@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import api from 'shared/utils/api';
+import { getViewMonthKey } from 'Project/Board/Filters/CalendarFilter/utils';
 import useApi from 'shared/hooks/api';
 import { PageError, CopyLinkButton, Button, AboutTooltip } from 'shared/components';
 
@@ -15,6 +16,7 @@ import Status from './Status';
 import AssigneesReporter from './AssigneesReporter';
 import Priority from './Priority';
 import EstimateTracking from './EstimateTracking';
+import DueDate from './DueDate';
 import Dates from './Dates';
 import { TopActions, TopActionsRight, Content, Left, Right } from './Styles';
 
@@ -23,6 +25,8 @@ const propTypes = {
   projectUsers: PropTypes.array.isRequired,
   fetchProject: PropTypes.func.isRequired,
   updateLocalProjectIssues: PropTypes.func.isRequired,
+  mergeFilters: PropTypes.func.isRequired,
+  calendarFilters: PropTypes.object.isRequired,
   modalClose: PropTypes.func.isRequired,
 };
 
@@ -31,6 +35,8 @@ const ProjectBoardIssueDetails = ({
   projectUsers,
   fetchProject,
   updateLocalProjectIssues,
+  mergeFilters,
+  calendarFilters,
   modalClose,
 }) => {
   const [{ data, error, setLocalData }, fetchIssue] = useApi.get(`/issues/${issueId}`);
@@ -50,6 +56,16 @@ const ProjectBoardIssueDetails = ({
       setLocalData: fields => {
         updateLocalIssueDetails(fields);
         updateLocalProjectIssues(issue.id, fields);
+
+        if (Object.prototype.hasOwnProperty.call(fields, 'dueDate')) {
+          const calendarUpdates = { ...calendarFilters };
+
+          if (fields.dueDate) {
+            calendarUpdates.viewMonthKey = getViewMonthKey(fields.dueDate);
+          }
+
+          mergeFilters({ calendar: calendarUpdates });
+        }
       },
     });
   };
@@ -82,6 +98,7 @@ const ProjectBoardIssueDetails = ({
           <AssigneesReporter issue={issue} updateIssue={updateIssue} projectUsers={projectUsers} />
           <Priority issue={issue} updateIssue={updateIssue} />
           <EstimateTracking issue={issue} updateIssue={updateIssue} />
+          <DueDate issue={issue} updateIssue={updateIssue} />
           <Dates issue={issue} />
         </Right>
       </Content>

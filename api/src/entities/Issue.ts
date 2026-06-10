@@ -63,6 +63,9 @@ class Issue extends BaseEntity {
   @Column('integer', { nullable: true })
   timeRemaining: number | null;
 
+  @Column('timestamp', { nullable: true })
+  dueDate: Date | null;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
