@@ -35,8 +35,19 @@ The API listens on **http://localhost:3000**.
 - A demo project named **Singularity v1.0**
 - Six team members with chess piece avatars: **Queen**, **Rook**, **King**, **Bishop**, **Horse**, and **Pawn**
 - Sample issues and comments for the kanban board
+- **Due dates** on seeded issues (spread across the current month) so the board calendar filter has data to display
 
 Each guest visit creates a **new** project and user set. The logged-in guest is **King**.
+
+## Issue fields
+
+Issues support standard kanban fields plus optional scheduling metadata:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `dueDate` | `timestamp` (nullable) | Optional due date for the issue; included in API responses via `src/serializers/issues.ts` |
+
+Send and receive `dueDate` as an ISO timestamp string through `PUT /issues/:issueId` and `POST /issues`.
 
 ## Project structure
 

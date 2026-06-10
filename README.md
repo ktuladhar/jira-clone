@@ -17,7 +17,8 @@ Unlike many tutorial projects, this codebase has real-world complexity: drag-and
 ### Kanban board
 - Four-column board: **Backlog**, **Selected for development**, **In progress**, and **Done**
 - Drag-and-drop issues between columns and within a column ([react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd))
-- Filter issues by assignee, type, and search text
+- Filter issues by assignee, search text, **Only My Issues**, and **Recently Updated**
+- **Calendar dashboard** — month-view filter to browse issues by due date, filter by assignee/type/status/priority, jump to today, and show unscheduled work
 
 ### Issue management
 - Create, view, edit, and delete issues
@@ -25,7 +26,8 @@ Unlike many tutorial projects, this codebase has real-world complexity: drag-and
 - Priority levels from Lowest to Highest
 - Rich-text description editor ([Quill](https://quilljs.com/))
 - Assignees and reporter
-- Due dates with a custom date/time picker
+- **Due dates** — set, clear, and edit from issue details; due dates appear on board cards with overdue highlighting
+- Custom **DatePicker** with calendar popup (portaled overlay), manual date entry, year selector, and optional date/time modes
 - Time tracking (original estimate, time spent, remaining)
 
 ### Comments
@@ -41,6 +43,7 @@ Unlike many tutorial projects, this codebase has real-world complexity: drag-and
 - Seeded project: **Singularity v1.0**
 - Six chess-themed team members: **Queen**, **Rook**, **King**, **Bishop**, **Horse**, and **Pawn** (with matching piece avatars)
 - Logged-in guest user: **King**
+- Sample issues include **due dates** spread across the current month for calendar filter demos
 
 ## Tech stack
 
@@ -79,6 +82,7 @@ jira_clone/
 - **No Redux/MobX** — state is managed locally with React hooks and a custom `useApi` hook for data fetching
 - **Custom Webpack setup** — no Create React App; full control over the build pipeline
 - **Shared component library** — Modal, Select, DatePicker, TextEditor, Form, Button, Tooltip, and more built in-house
+- **Board calendar filter** — `Project/Board/Filters/CalendarFilter` provides a portaled month grid that filters the kanban board without leaving the page
 - **Query-param modals** — issue search and create modals are driven by URL query parameters
 
 ### API
@@ -116,6 +120,8 @@ This fork includes compatibility updates for modern development environments:
 - **TypeORM upgraded to 0.3** with **PostgreSQL 18** support (previously required PostgreSQL 11)
 - **`pg` upgraded to v8** — fixes silent connection failures on Node.js 18+
 - **Chess-themed guest seed data** — six demo users with piece avatars and **Singularity v1.0** project
+- **Issue due dates** — `dueDate` field on the Issue entity, serialized in the API, editable in issue details, and shown on board cards
+- **Board calendar filter** — month-view dashboard to filter issues by due date and related criteria
 - **Client auth routing** — authenticate before hitting protected API routes
 - **Node.js 18+ client startup** — OpenSSL legacy provider set via `cross-env` in npm scripts
 - **API startup messages** — clearer errors for port conflicts and database connection failures
@@ -251,7 +257,7 @@ npm run start:production
 3. Start the API in test mode: `cd api && npm run start:test`
 4. Open Cypress: `cd client && npm run test:cypress`
 
-Test suites cover authentication, issue create/details, drag-and-drop, filters, search, and project settings.
+Test suites cover authentication, issue create/details, drag-and-drop, filters (including calendar), search, and project settings.
 
 ## What's missing?
 

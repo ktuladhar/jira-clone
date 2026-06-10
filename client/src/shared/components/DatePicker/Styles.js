@@ -7,18 +7,25 @@ export const StyledDatePicker = styled.div`
   width: 100%;
 `;
 
+export const DropdownPortal = styled.div`
+  position: fixed;
+  z-index: ${zIndexValues.modal + 1};
+  top: ${props => props.$top}px;
+  left: ${props => props.$left}px;
+`;
+
 export const Dropdown = styled.div`
-  z-index: ${props => (props.isPortaled ? zIndexValues.modal + 1 : zIndexValues.dropdown)};
-  position: ${props => (props.isPortaled ? 'fixed' : 'absolute')};
-  top: ${props => (props.isPortaled ? `${props.top}px` : '130%')};
-  left: ${props => (props.isPortaled ? `${props.left}px` : 'auto')};
-  right: ${props => (props.isPortaled ? 'auto' : '0')};
+  z-index: ${props => (props.$isPortaled ? zIndexValues.modal + 1 : zIndexValues.dropdown)};
+  position: ${props => (props.$isPortaled ? 'relative' : 'absolute')};
+  top: ${props => (props.$isPortaled ? 'auto' : '130%')};
+  left: ${props => (props.$isPortaled ? 'auto' : '0')};
+  right: ${props => (props.$isPortaled ? 'auto' : '0')};
   width: 270px;
   border-radius: 3px;
   background: #fff;
   ${mixin.boxShadowDropdown}
   ${props =>
-    props.withTime &&
+    props.$withTime &&
     css`
       width: 360px;
       padding-right: 90px;
@@ -87,8 +94,14 @@ export const SelectedMonthYear = styled.div`
 
 export const YearSelect = styled.select`
   margin-left: 5px;
-  width: 60px;
+  width: 72px;
   height: 22px;
+  padding: 0 4px;
+  border: 1px solid ${color.borderLightest};
+  border-radius: 3px;
+  background: #fff;
+  color: ${color.textDarkest};
+  cursor: pointer;
   ${font.size(13)}
 `;
 

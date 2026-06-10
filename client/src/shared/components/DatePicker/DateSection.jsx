@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { times, range } from 'lodash';
@@ -36,8 +36,15 @@ const getInitialMonth = dateValue => {
 const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) => {
   const [selectedMonth, setSelectedMonth] = useState(getInitialMonth(value));
 
-  const handleYearChange = year => {
-    setSelectedMonth(moment(selectedMonth).set({ year: Number(year) }));
+  useEffect(() => {
+    setSelectedMonth(getInitialMonth(value));
+  }, [value]);
+
+  const handleYearChange = event => {
+    const year = Number(event.target.value);
+    if (!year) return;
+
+    setSelectedMonth(moment(selectedMonth).set({ year }));
   };
 
   const handleMonthChange = addOrSubtract => {
@@ -63,9 +70,9 @@ const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) =
     <DateSection>
       <SelectedMonthYear>{formatDate(selectedMonth, 'MMM YYYY')}</SelectedMonthYear>
 
-      <YearSelect onChange={event => handleYearChange(event.target.value)}>
-        {generateYearOptions().map(option => (
-          <option key={option.label} value={option.value}>
+      <YearSelect value={selectedMonth.year()} onChange={handleYearChange}>
+        {generateYearOptions(selectedMonth.year()).map(option => (
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
@@ -101,12 +108,16 @@ const DatePickerDateSection = ({ withTime, value, onChange, setDropdownOpen }) =
   );
 };
 
-const currentYear = moment().year();
+const generateYearOptions = selectedYear => {
+  const currentYear = moment().year();
+  const minYear = Math.min(currentYear - 10, selectedYear);
+  const maxYear = Math.max(currentYear + 10, selectedYear);
 
-const generateYearOptions = () => [
-  { label: 'Year', value: '' },
-  ...times(50, i => ({ label: `${i + currentYear - 10}`, value: `${i + currentYear - 10}` })),
-];
+  return times(maxYear - minYear + 1, index => {
+    const year = minYear + index;
+    return { label: String(year), value: year };
+  });
+};
 
 const generateWeekDayNames = () => moment.weekdaysMin(true);
 

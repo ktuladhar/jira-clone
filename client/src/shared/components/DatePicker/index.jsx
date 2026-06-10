@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
@@ -16,11 +16,36 @@ import DateSection from './DateSection';
 import TimeSection from './TimeSection';
 import {
   StyledDatePicker,
+  DropdownPortal,
   Dropdown,
   InputActions,
   InputActionButton,
   ClearDateFooter,
 } from './Styles';
+
+const DROPDOWN_MARGIN = 4;
+const DATE_ONLY_WIDTH = 270;
+const DATE_TIME_WIDTH = 360;
+const DROPDOWN_HEIGHT_ESTIMATE = 320;
+
+const getDropdownWidth = withTime => (withTime ? DATE_TIME_WIDTH : DATE_ONLY_WIDTH);
+
+const calculateDropdownPosition = (anchorRect, withTime) => {
+  const width = getDropdownWidth(withTime);
+  const height = DROPDOWN_HEIGHT_ESTIMATE;
+
+  let { left } = anchorRect;
+  let top = anchorRect.bottom + DROPDOWN_MARGIN;
+
+  left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+
+  if (top + height > window.innerHeight - 8) {
+    const topAbove = anchorRect.top - height - DROPDOWN_MARGIN;
+    top = topAbove >= 8 ? topAbove : Math.max(8, window.innerHeight - height - 8);
+  }
+
+  return { top, left };
+};
 
 const propTypes = {
   className: PropTypes.string,
@@ -68,17 +93,32 @@ const DatePicker = ({
 
   useOnOutsideClick([$containerRef, $dropdownRef], isDropdownOpen, () => setDropdownOpen(false));
 
-  const openDropdown = () => {
-    if ($containerRef.current) {
-      const rect = $containerRef.current.getBoundingClientRect();
-      const dropdownWidth = withTime ? 360 : 270;
-      const top = rect.bottom + 4;
-      const left = Math.max(8, rect.right - dropdownWidth);
+  const updateDropdownPosition = useCallback(() => {
+    if (!$containerRef.current) return;
 
-      setDropdownPosition({ top, left });
-    }
+    const rect = $containerRef.current.getBoundingClientRect();
+    setDropdownPosition(calculateDropdownPosition(rect, withTime));
+  }, [withTime]);
+
+  const openDropdown = () => {
+    updateDropdownPosition();
     setDropdownOpen(true);
   };
+
+  useLayoutEffect(() => {
+    if (!isDropdownOpen) return undefined;
+
+    updateDropdownPosition();
+
+    const handleReposition = () => updateDropdownPosition();
+    window.addEventListener('resize', handleReposition);
+    document.addEventListener('scroll', handleReposition, true);
+
+    return () => {
+      window.removeEventListener('resize', handleReposition);
+      document.removeEventListener('scroll', handleReposition, true);
+    };
+  }, [isDropdownOpen, updateDropdownPosition]);
 
   const handleClear = event => {
     event.stopPropagation();
@@ -114,13 +154,16 @@ const DatePicker = ({
   };
 
   const renderDropdown = () => (
-    <div ref={$dropdownRef}>
-      <Dropdown
-        withTime={withTime}
-        isPortaled
-        top={dropdownPosition.top}
-        left={dropdownPosition.left}
-      >
+    <DropdownPortal
+      ref={$dropdownRef}
+      $top={dropdownPosition.top}
+      $left={dropdownPosition.left}
+      onMouseDown={event => {
+        if (event.target.closest('select')) return;
+        event.preventDefault();
+      }}
+    >
+      <Dropdown $withTime={withTime} $isPortaled>
         <DateSection
           withTime={withTime}
           value={value}
@@ -136,7 +179,7 @@ const DatePicker = ({
           </ClearDateFooter>
         )}
       </Dropdown>
-    </div>
+    </DropdownPortal>
   );
 
   return (
@@ -163,7 +206,12 @@ const DatePicker = ({
             <Icon type="close" size={14} />
           </InputActionButton>
         )}
-        <InputActionButton type="button" aria-label="Open calendar" onClick={openDropdown}>
+        <InputActionButton
+          type="button"
+          aria-label="Open calendar"
+          onMouseDown={event => event.preventDefault()}
+          onClick={openDropdown}
+        >
           <Icon type="calendar" size={15} />
         </InputActionButton>
       </InputActions>
