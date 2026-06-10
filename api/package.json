@@ -4,6 +4,8 @@
   "author": "Ivor Reic",
   "license": "MIT",
   "scripts": {
+    "stop": "npx --yes kill-port 3000",
+    "prestart": "npm run stop",
     "start": "nodemon --exec \"npx ts-node --files src/index.ts\"",
     "start:test": "cross-env NODE_ENV='test' DB_DATABASE='jira_test' npm start",
     "start:production": "pm2 start --name 'jira_api' node -- -r ./tsconfig-paths.js build/index.js",

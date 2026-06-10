@@ -4,6 +4,8 @@
   "author": "Ivor Reic",
   "license": "MIT",
   "scripts": {
+    "stop": "npx --yes kill-port 8080",
+    "prestart": "npm run stop",
     "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server",
     "start:production": "pm2 start --name 'jira_client' server.js",
     "test:jest": "jest",

@@ -119,6 +119,8 @@ This fork includes compatibility updates for modern development environments:
 - **Client auth routing** — authenticate before hitting protected API routes
 - **Node.js 18+ client startup** — OpenSSL legacy provider set via `cross-env` in npm scripts
 - **API startup messages** — clearer errors for port conflicts and database connection failures
+- **Auto port cleanup** — `npm start` in `/api` and `/client` frees ports **3000** and **8080** before launching
+- **Client dev server** — binds to all interfaces so both `localhost:8080` and `127.0.0.1:8080` work
 - **README and repo links** updated to point to [ktuladhar/jira-clone](https://github.com/ktuladhar/jira-clone)
 
 ## Setting up development environment 🛠
@@ -143,7 +145,7 @@ docker run -d --name jira-postgres \
 
 If you use a non-default port, set `DB_PORT` in your `/api/.env` file accordingly.
 
-### Install and run
+### First-time setup
 
 ```bash
 git clone https://github.com/ktuladhar/jira-clone.git
@@ -157,21 +159,52 @@ cd jira-clone
 npm run install-dependencies
 ```
 
-3. Start the API (port **3000**):
-
-```bash
-cd api && npm start
-```
-
-4. Start the client in a second terminal (port **8080**):
-
-```bash
-cd client && npm start
-```
-
-5. Open **http://localhost:8080/** — the app will authenticate as a guest and load the **Singularity v1.0** demo project.
-
 See also: [api/README.md](api/README.md) and [client/README.md](client/README.md).
+
+### Running the app (every time)
+
+You need **two terminals** — one for the API and one for the client. PostgreSQL must be running before you start the API.
+
+**Terminal 1 — API** (port **3000**):
+
+```bash
+cd api
+npm start
+```
+
+Wait until you see:
+
+```text
+API listening on http://localhost:3000
+```
+
+**Terminal 2 — Client** (port **8080**):
+
+```bash
+cd client
+npm start
+```
+
+Wait until you see:
+
+```text
+Project is running at http://localhost:8080/
+```
+
+**Open the app:** [http://localhost:8080](http://localhost:8080)
+
+The app signs you in as a guest and loads the **Singularity v1.0** demo board.
+
+> **Important:** Open the **client** at port **8080**, not the API at port **3000**. Port 3000 is the REST API only — it is not the website.
+
+**Stopping:** Press **Ctrl+C** in each terminal when you are done. If you close a terminal without stopping the server, the process may keep running and block the port next time.
+
+**Port already in use?** Each `npm start` automatically frees its port before launching (`3000` for the API, `8080` for the client). You can also run manually:
+
+```bash
+cd api && npm run stop      # free port 3000
+cd client && npm run stop   # free port 8080
+```
 
 ### Environment variables
 
@@ -195,7 +228,10 @@ See also: [api/README.md](api/README.md) and [client/README.md](client/README.md
 
 | Problem | Fix |
 | --- | --- |
-| `Port 3000 is already in use` | Find and stop the process on port 3000 (Windows: `netstat -ano`, then `taskkill /F /PID <pid> /T`) |
+| `Port 3000 is already in use` | Run `cd api && npm run stop`, then `npm start` again |
+| `Port 8080 is already in use` | Run `cd client && npm run stop`, then `npm start` again |
+| Website shows a spinner forever | Start the API first — the client needs it on port **3000**. Check Terminal 1 for `API listening on http://localhost:3000` |
+| Opened `localhost:3000` in the browser | That is the API, not the app. Use [http://localhost:8080](http://localhost:8080) |
 | `ERR_OSSL_EVP_UNSUPPORTED` (client) | Run `npm install` in `/client` — do not run `npm audit fix --force` |
 | `npm install` fails in `/client` | Use the pinned versions in `package-lock.json`; avoid `npm update` |
 | Stale demo users or project name | DevTools → Console: `localStorage.removeItem('authToken'); location.reload()` |
