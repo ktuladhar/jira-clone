@@ -44,7 +44,7 @@ export const remove = catchErrors(async (req, res) => {
 });
 
 const calculateListPosition = async ({ projectId, status }: Issue): Promise<number> => {
-  const issues = await Issue.find({ projectId, status });
+  const issues = await Issue.findBy({ projectId, status });
 
   const listPositions = issues.map(({ listPosition }) => listPosition);
 

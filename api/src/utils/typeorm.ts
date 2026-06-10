@@ -1,5 +1,6 @@
-import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
+import { EntityTarget, FindOneOptions, ObjectLiteral } from 'typeorm';
 
+import { AppDataSource } from 'database/createConnection';
 import { Project, User, Issue, Comment } from 'entities';
 import { EntityNotFoundError, BadUserInputError } from 'errors';
 import { generateErrors } from 'utils/validation';
@@ -9,14 +10,18 @@ type EntityInstance = Project | User | Issue | Comment;
 
 const entities: { [key: string]: EntityConstructor } = { Comment, Issue, Project, User };
 
-export const findEntityOrThrow = async <T extends EntityConstructor>(
-  Constructor: T,
+export const findEntityOrThrow = async <T extends ObjectLiteral>(
+  Constructor: EntityTarget<T>,
   id: number | string,
-  options?: FindOneOptions,
-): Promise<InstanceType<T>> => {
-  const instance = await Constructor.findOne(id, options);
+  options?: Omit<FindOneOptions<T>, 'where'>,
+): Promise<T> => {
+  const instance = await AppDataSource.getRepository(Constructor).findOne({
+    ...(options || {}),
+    where: ({ id: Number(id) } as unknown) as FindOneOptions<T>['where'],
+  });
   if (!instance) {
-    throw new EntityNotFoundError(Constructor.name);
+    const name = typeof Constructor === 'function' ? Constructor.name : 'Entity';
+    throw new EntityNotFoundError(name);
   }
   return instance;
 };
@@ -49,7 +54,7 @@ export const updateEntity = async <T extends EntityConstructor>(
 ): Promise<InstanceType<T>> => {
   const instance = await findEntityOrThrow(Constructor, id);
   Object.assign(instance, input);
-  return validateAndSaveEntity(instance);
+  return validateAndSaveEntity(instance as InstanceType<T>);
 };
 
 export const deleteEntity = async <T extends EntityConstructor>(
@@ -58,5 +63,5 @@ export const deleteEntity = async <T extends EntityConstructor>(
 ): Promise<InstanceType<T>> => {
   const instance = await findEntityOrThrow(Constructor, id);
   await instance.remove();
-  return instance;
+  return instance as InstanceType<T>;
 };

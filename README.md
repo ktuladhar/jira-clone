@@ -42,7 +42,7 @@ Unlike many tutorial projects, this codebase has real-world complexity: drag-and
 | Layer | Technologies |
 | --- | --- |
 | **Client** | React 16, React Router 5, Styled Components, Formik, Axios, Webpack 4, Babel |
-| **API** | Node.js, Express, TypeScript, TypeORM, PostgreSQL, JWT |
+| **API** | Node.js, Express, TypeScript, TypeORM 0.3, PostgreSQL 18, JWT |
 | **Testing** | Cypress (E2E), Jest (client unit tests available) |
 | **Tooling** | ESLint, Prettier, Husky, lint-staged |
 
@@ -78,7 +78,7 @@ jira_clone/
 
 ### API
 - **Express REST API** with JWT bearer-token authentication
-- **TypeORM** with PostgreSQL; schema is auto-synchronized on startup (no migrations yet)
+- **TypeORM 0.3** with PostgreSQL 18; schema is auto-synchronized on startup (no migrations yet)
 - **Guest accounts** — `POST /authentication/guest` creates a user, project, and sample issues
 - **Entity relationships** — Projects have many Issues; Issues have many Comments and many-to-many Users (assignees)
 
@@ -103,31 +103,32 @@ jira_clone/
 
 This fork includes compatibility updates for modern development environments:
 
+- **TypeORM upgraded to 0.3** with **PostgreSQL 18** support (previously required PostgreSQL 11)
 - **`pg` upgraded to v8** — fixes silent connection failures on Node.js 18+
 - **README and repo links** updated to point to [ktuladhar/jira-clone](https://github.com/ktuladhar/jira-clone)
-- **Setup documentation** added for PostgreSQL 11, Docker, and Node.js OpenSSL workarounds
+- **Setup documentation** updated for PostgreSQL 18, Docker, and Node.js OpenSSL workarounds
 
 ## Setting up development environment 🛠
 
 ### Prerequisites
 
 - **Node.js 16–20** recommended (see [Node.js notes](#nodejs-notes) for Node 18+)
-- **PostgreSQL 11** — TypeORM 0.2 in this project is not compatible with PostgreSQL 12+
+- **PostgreSQL 14+** — tested with **PostgreSQL 18**
 
 ### Database
 
-Install [PostgreSQL](https://www.postgresql.org/) and create a database named `jira_development`, or run Postgres 11 with Docker:
+Install [PostgreSQL](https://www.postgresql.org/) and create a database named `jira_development`, or run Postgres 18 with Docker:
 
 ```bash
 docker run -d --name jira-postgres \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=jira_development \
-  -p 5433:5432 \
-  postgres:11
+  -p 5432:5432 \
+  postgres:18
 ```
 
-If you use Docker on port `5433`, set `DB_PORT=5433` in your `/api/.env` file.
+If you use a non-default port, set `DB_PORT` in your `/api/.env` file accordingly.
 
 ### Install and run
 
@@ -181,7 +182,7 @@ NODE_OPTIONS=--openssl-legacy-provider npm start
 $env:NODE_OPTIONS="--openssl-legacy-provider"; npm start
 ```
 
-**API (Windows):** If `ts-node` is not found, add `api/node_modules/.bin` to your `PATH` before running `npm start`.
+**API (Windows):** The start script uses `npx ts-node` so no manual PATH setup is required.
 
 ### Production build
 
