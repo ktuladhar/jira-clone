@@ -37,6 +37,11 @@ Unlike many tutorial projects, this codebase has real-world complexity: drag-and
 - Project settings (name, URL, description, category, avatar)
 - Guest authentication — visiting the app auto-creates a session with seeded sample data
 
+### Demo data
+- Seeded project: **Singularity v1.0**
+- Six chess-themed team members: **Queen**, **Rook**, **King**, **Bishop**, **Horse**, and **Pawn** (with matching piece avatars)
+- Logged-in guest user: **King**
+
 ## Tech stack
 
 | Layer | Technologies |
@@ -79,8 +84,13 @@ jira_clone/
 ### API
 - **Express REST API** with JWT bearer-token authentication
 - **TypeORM 0.3** with PostgreSQL 18; schema is auto-synchronized on startup (no migrations yet)
-- **Guest accounts** — `POST /authentication/guest` creates a user, project, and sample issues
+- **Guest accounts** — `POST /authentication/guest` creates a user, project, sample issues, and six chess-themed team members (see [Demo data](#demo-data))
 - **Entity relationships** — Projects have many Issues; Issues have many Comments and many-to-many Users (assignees)
+
+### Client auth
+- Unauthenticated visits redirect to `/authenticate` before loading the board
+- JWT is stored in `localStorage` as `authToken`
+- Clear the token to start a fresh guest session with new seed data
 
 ### API endpoints
 
@@ -105,8 +115,11 @@ This fork includes compatibility updates for modern development environments:
 
 - **TypeORM upgraded to 0.3** with **PostgreSQL 18** support (previously required PostgreSQL 11)
 - **`pg` upgraded to v8** — fixes silent connection failures on Node.js 18+
+- **Chess-themed guest seed data** — six demo users with piece avatars and **Singularity v1.0** project
+- **Client auth routing** — authenticate before hitting protected API routes
+- **Node.js 18+ client startup** — OpenSSL legacy provider set via `cross-env` in npm scripts
+- **API startup messages** — clearer errors for port conflicts and database connection failures
 - **README and repo links** updated to point to [ktuladhar/jira-clone](https://github.com/ktuladhar/jira-clone)
-- **Setup documentation** updated for PostgreSQL 18, Docker, and Node.js OpenSSL workarounds
 
 ## Setting up development environment 🛠
 
@@ -156,7 +169,9 @@ cd api && npm start
 cd client && npm start
 ```
 
-5. Open **http://localhost:8080/** — the app will authenticate as a guest and load a seeded project.
+5. Open **http://localhost:8080/** — the app will authenticate as a guest and load the **Singularity v1.0** demo project.
+
+See also: [api/README.md](api/README.md) and [client/README.md](client/README.md).
 
 ### Environment variables
 
@@ -175,6 +190,16 @@ cd client && npm start
 **Client (Node 18+):** Webpack 4 requires the OpenSSL legacy provider. The `npm start` and `npm run build` scripts set this automatically via `cross-env`. If you still see `ERR_OSSL_EVP_UNSUPPORTED`, run `npm install` in `/client` first.
 
 **API (Windows):** The start script uses `npx ts-node` so no manual PATH setup is required.
+
+### Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| `Port 3000 is already in use` | Find and stop the process on port 3000 (Windows: `netstat -ano`, then `taskkill /F /PID <pid> /T`) |
+| `ERR_OSSL_EVP_UNSUPPORTED` (client) | Run `npm install` in `/client` — do not run `npm audit fix --force` |
+| `npm install` fails in `/client` | Use the pinned versions in `package-lock.json`; avoid `npm update` |
+| Stale demo users or project name | DevTools → Console: `localStorage.removeItem('authToken'); location.reload()` |
+| Board loads but no data | Ensure the API is running on port **3000** |
 
 ### Production build
 
