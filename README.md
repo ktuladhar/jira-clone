@@ -10,7 +10,7 @@ This project is based on [oldboyxx/jira_clone](https://github.com/oldboyxx/jira_
 
 Unlike many tutorial projects, this codebase has real-world complexity: drag-and-drop kanban boards, rich issue modals, custom UI components, and a typed REST API — while remaining readable enough to learn from.
 
-This copy includes additional enhancements (due dates, board calendar filter, modern PostgreSQL/Node compatibility, and updated documentation).
+This copy includes additional enhancements (due dates, board calendar filter, AI assistant, modern PostgreSQL/Node compatibility, and updated documentation).
 
 ## App features
 
@@ -36,6 +36,7 @@ This copy includes additional enhancements (due dates, board calendar filter, mo
 
 ### Project tools
 - Issue search modal
+- **AI Assistant** — natural-language chat to create, rename, and move board issues (OpenRouter or OpenAI; rule-based fallback when no API key is set)
 - Project settings (name, URL, description, category, avatar)
 - Guest authentication — visiting the app auto-creates a session with seeded sample data
 
@@ -60,9 +61,10 @@ This copy includes additional enhancements (due dates, board calendar filter, mo
 jira_clone/
 ├── api/                    # Node/TypeScript REST API
 │   ├── src/
-│   │   ├── controllers/    # Route handlers (issues, projects, comments, auth)
+│   │   ├── controllers/    # Route handlers (issues, projects, comments, auth, ai)
 │   │   ├── entities/       # TypeORM models (User, Project, Issue, Comment)
 │   │   ├── middleware/     # Auth, error handling, response helpers
+│   │   ├── services/       # AI chat planning and board actions
 │   │   ├── database/       # Connection setup and seed scripts
 │   │   └── routes.ts       # Public and private route definitions
 │   └── .env.example
@@ -70,7 +72,7 @@ jira_clone/
 │   ├── src/
 │   │   ├── App/            # Root layout, routing, global styles
 │   │   ├── Auth/           # Guest authentication flow
-│   │   ├── Project/        # Board, issue details, settings, search
+│   │   ├── Project/        # Board, issue details, settings, search, AI chat
 │   │   └── shared/         # Reusable components, hooks, and utilities
 │   └── cypress/            # End-to-end tests
 └── package.json            # Root scripts (install, build, pre-commit)
@@ -83,12 +85,14 @@ jira_clone/
 - **Custom Webpack setup** — no Create React App; full control over the build pipeline
 - **Shared component library** — Modal, Select, DatePicker, TextEditor, Form, Button, Tooltip, and more built in-house
 - **Board calendar filter** — `Project/Board/Filters/CalendarFilter` provides a portaled month grid that filters the kanban board without leaving the page
-- **Query-param modals** — issue search and create modals are driven by URL query parameters
+- **AI chat modal** — `Project/AiChat` opens from the left navbar; uses URL query params like other modals
+- **Query-param modals** — issue search, create, and AI chat modals are driven by URL query parameters
 
 ### API
 - **Express REST API** with JWT bearer-token authentication
 - **TypeORM 0.3** with PostgreSQL 18; schema is auto-synchronized on startup (no migrations yet)
 - **Guest accounts** — `POST /authentication/guest` creates a user, project, sample issues, and six chess-themed team members (see [Demo data](#demo-data))
+- **AI chat service** — `POST /ai/chat` plans board actions via OpenRouter or OpenAI when configured, with a built-in rule-based fallback for common commands
 - **Entity relationships** — Projects have many Issues; Issues have many Comments and many-to-many Users (assignees)
 
 ### Client auth
@@ -101,6 +105,7 @@ jira_clone/
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `POST` | `/authentication/guest` | Create guest session and receive JWT |
+| `POST` | `/ai/chat` | Send a message to the AI assistant; may create, update, or move issues |
 | `GET` | `/currentUser` | Get authenticated user |
 | `GET` | `/project` | Get project with users and issues |
 | `PUT` | `/project` | Update project settings |
@@ -122,6 +127,7 @@ This codebase extends the upstream project with compatibility updates and new fe
 - **Chess-themed guest seed data** — six demo users with piece avatars and **Singularity v1.0** project
 - **Issue due dates** — `dueDate` field on the Issue entity, serialized in the API, editable in issue details, and shown on board cards
 - **Board calendar filter** — month-view dashboard to filter issues by due date and related criteria
+- **AI Assistant** — chat UI and backend service to manage issues with natural language
 - **Client auth routing** — authenticate before hitting protected API routes
 - **Node.js 18+ client startup** — OpenSSL legacy provider set via `cross-env` in npm scripts
 - **API startup messages** — clearer errors for port conflicts and database connection failures
@@ -222,6 +228,14 @@ cd client && npm run stop   # free port 8080
 | `DB_DATABASE` | Database name | `jira_development` |
 | `JWT_SECRET` | Secret for signing auth tokens | — |
 | `NODE_ENV` | Environment (`development`, `test`, `production`) | `development` |
+| `OPENROUTER_API_KEY` | OpenRouter API key for AI chat (preferred when set) | — |
+| `OPENAI_API_KEY` | OpenAI API key for AI chat (used if OpenRouter key is not set) | — |
+| `OPENROUTER_MODEL` | OpenRouter model id | `openai/gpt-4o-mini` |
+| `OPENAI_MODEL` | OpenAI model id | `gpt-4o-mini` |
+| `OPENROUTER_SITE_URL` | Referer sent to OpenRouter | `http://localhost:8080` |
+| `OPENROUTER_APP_NAME` | App name sent to OpenRouter | `Jira Clone` |
+
+Optional AI keys enable full natural-language chat. Without them, the assistant still handles simple commands like “Create a task called …” and “Move issue 1 to Done” via rule-based parsing.
 
 ### Node.js notes
 
@@ -241,6 +255,7 @@ cd client && npm run stop   # free port 8080
 | `npm install` fails in `/client` | Use the pinned versions in `package-lock.json`; avoid `npm update` |
 | Stale demo users or project name | DevTools → Console: `localStorage.removeItem('authToken'); location.reload()` |
 | Board loads but no data | Ensure the API is running on port **3000** |
+| AI chat returns generic fallback replies | Add `OPENROUTER_API_KEY` or `OPENAI_API_KEY` to `/api/.env` and restart the API |
 
 ### Production build
 

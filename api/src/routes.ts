@@ -1,3 +1,4 @@
+import * as ai from 'controllers/ai';
 import * as authentication from 'controllers/authentication';
 import * as comments from 'controllers/comments';
 import * as issues from 'controllers/issues';
@@ -15,6 +16,8 @@ export const attachPublicRoutes = (app: any): void => {
 };
 
 export const attachPrivateRoutes = (app: any): void => {
+  app.post('/ai/chat', ai.chat);
+
   app.post('/comments', comments.create);
   app.put('/comments/:commentId', comments.update);
   app.delete('/comments/:commentId', comments.remove);

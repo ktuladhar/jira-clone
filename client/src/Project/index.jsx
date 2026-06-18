@@ -11,6 +11,7 @@ import Sidebar from './Sidebar';
 import Board from './Board';
 import IssueSearch from './IssueSearch';
 import IssueCreate from './IssueCreate';
+import AiChat from './AiChat';
 import ProjectSettings from './ProjectSettings';
 import { ProjectPage } from './Styles';
 
@@ -20,6 +21,7 @@ const Project = () => {
 
   const issueSearchModalHelpers = createQueryParamModalHelpers('issue-search');
   const issueCreateModalHelpers = createQueryParamModalHelpers('issue-create');
+  const aiChatModalHelpers = createQueryParamModalHelpers('ai-chat');
 
   const [{ data, error, setLocalData }, fetchProject] = useApi.get('/project');
 
@@ -42,6 +44,7 @@ const Project = () => {
       <NavbarLeft
         issueSearchModalOpen={issueSearchModalHelpers.open}
         issueCreateModalOpen={issueCreateModalHelpers.open}
+        aiChatModalOpen={aiChatModalHelpers.open}
       />
 
       <Sidebar project={project} />
@@ -72,6 +75,17 @@ const Project = () => {
               modalClose={modal.close}
             />
           )}
+        />
+      )}
+
+      {aiChatModalHelpers.isOpen() && (
+        <Modal
+          isOpen
+          testid="modal:ai-chat"
+          variant="aside"
+          width={460}
+          onClose={aiChatModalHelpers.close}
+          renderContent={() => <AiChat project={project} fetchProject={fetchProject} />}
         />
       )}
 

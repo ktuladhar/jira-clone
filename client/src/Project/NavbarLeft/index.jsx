@@ -1,16 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Icon, AboutTooltip } from 'shared/components';
+import { Icon, AboutTooltip, AiChatIcon } from 'shared/components';
 
-import { NavLeft, LogoLink, StyledLogo, Bottom, Item, ItemText } from './Styles';
+import {
+  NavLeft,
+  LogoLink,
+  StyledLogo,
+  Bottom,
+  Item,
+  AiItem,
+  AiIconWrap,
+  ItemText,
+} from './Styles';
 
 const propTypes = {
   issueSearchModalOpen: PropTypes.func.isRequired,
   issueCreateModalOpen: PropTypes.func.isRequired,
+  aiChatModalOpen: PropTypes.func.isRequired,
 };
 
-const ProjectNavbarLeft = ({ issueSearchModalOpen, issueCreateModalOpen }) => (
+const ProjectNavbarLeft = ({ issueSearchModalOpen, issueCreateModalOpen, aiChatModalOpen }) => (
   <NavLeft>
     <LogoLink to="/">
       <StyledLogo color="#fff" />
@@ -27,6 +37,13 @@ const ProjectNavbarLeft = ({ issueSearchModalOpen, issueCreateModalOpen }) => (
     </Item>
 
     <Bottom>
+      <AiItem onClick={aiChatModalOpen} data-testid="navbar:ai-chat">
+        <AiIconWrap>
+          <AiChatIcon size={25} />
+        </AiIconWrap>
+        <ItemText>AI Assistant</ItemText>
+      </AiItem>
+
       <AboutTooltip
         placement="right"
         offset={{ top: -218 }}

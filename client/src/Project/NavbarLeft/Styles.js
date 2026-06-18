@@ -61,6 +61,19 @@ export const Item = styled.div`
   }
 `;
 
+export const AiItem = styled(Item)``;
+
+export const AiIconWrap = styled.div`
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #deebff;
+`;
+
 export const ItemText = styled.div`
   position: relative;
   right: 12px;
